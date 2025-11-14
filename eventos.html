@@ -1,200 +1,225 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Eventos | SEP Minecraft</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Eventos | SEP Minecraft</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0a0a0a, #003333, #0a0a0a, #001a1a);
+    background-size: 400% 400%;
+    animation: neonBackground 20s ease infinite;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+  }
 
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #0a0a0a, #003333, #0a0a0a, #001a1a);
-      background-size: 400% 400%;
-      animation: neonBackground 20s ease infinite;
-      color: #fff;
-      text-align: center;
-      padding: 20px;
-    }
+  @keyframes neonBackground {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
 
-    @keyframes neonBackground {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
+  h1 { color: #00ffcc; font-size: 3rem; margin-top: 2rem; text-shadow: 0 0 15px #00ffcc; }
 
-    h1 {
-      color: #00ffcc;
-      font-size: 3rem;
-      margin-top: 2rem;
-      text-shadow: 0 0 15px #00ffcc;
-    }
+  .eventos-box {
+    background: #111;
+    border: 2px solid #00ffcc;
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin: 2rem auto;
+    max-width: 800px;
+    box-shadow: 0 0 20px #00ffcc50;
+    text-align: left;
+  }
 
-    .eventos-box {
-      background: #111;
-      border: 2px solid #00ffcc;
-      border-radius: 15px;
-      padding: 1.5rem;
-      margin: 2rem auto;
-      max-width: 800px;
-      box-shadow: 0 0 20px #00ffcc50;
-      text-align: left;
-    }
+  .eventos-box ul { list-style: none; padding: 0; margin: 0; font-size: 1.2rem; }
+  .eventos-box li {
+    background: #222;
+    border: 1px solid #555;
+    padding: 0.8rem;
+    margin: 0.5rem 0;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
 
-    .eventos-box ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      font-size: 1.2rem;
-    }
+  .btn {
+    display: inline-block;
+    background: #111;
+    border: 2px solid #0ff;
+    color: #0ff;
+    padding: 0.8rem 1.5rem;
+    margin: 1rem auto;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: 0.2s ease;
+    font-size: 1.1rem;
+    cursor: pointer;
+  }
 
-    .eventos-box li {
-      background: #222;
-      border: 1px solid #555;
-      padding: 0.8rem;
-      margin: 0.5rem 0;
-      border-radius: 10px;
-    }
+  .btn:hover { background: #0ff; color: #000; box-shadow: 0 0 20px #0ff; }
 
-    .btn {
-      display: inline-block;
-      background: #111;
-      border: 2px solid #0ff;
-      color: #0ff;
-      padding: 0.8rem 1.5rem;
-      margin: 1rem auto;
-      border-radius: 10px;
-      text-decoration: none;
-      transition: 0.2s ease;
-      font-size: 1.1rem;
-    }
+  /* Modal */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+  }
 
-    .btn:hover {
-      background: #0ff;
-      color: #000;
-      box-shadow: 0 0 20px #0ff;
-    }
+  @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
 
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    }
+  .modal-content {
+    background: #111;
+    padding: 20px;
+    border-radius: 15px;
+    border: 2px solid #0ff;
+    box-shadow: 0 0 15px #0ff;
+    text-align: left;
+    max-width: 400px;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    animation: slideDown 0.3s ease;
+  }
 
-    .modal-content {
-      background: #111;
-      padding: 20px;
-      border-radius: 15px;
-      border: 2px solid #0ff;
-      box-shadow: 0 0 15px #0ff;
-      text-align: center;
-      max-width: 300px;
-      width: 90%;
-    }
+  @keyframes slideDown { from {transform: translateY(-20px); opacity:0;} to {transform: translateY(0); opacity:1;} }
 
-    .modal input {
-      padding: 10px;
-      margin: 10px 0;
-      width: 100%;
-      border-radius: 8px;
-      border: 1px solid #0ff;
-      background: #222;
-      color: #fff;
-    }
-  </style>
+  .modal input, .modal select, .modal textarea {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #0ff;
+    background: #222;
+    color: #fff;
+    width: 100%;
+  }
 
+  .modal textarea { resize: vertical; min-height: 60px; }
+
+</style>
 </head>
-
 <body>
 
-  <h1>📅 Eventos del Servidor</h1>
+<h1>📅 Eventos del Servidor</h1>
 
-  <div class="eventos-box">
-    <ul id="eventos-lista"></ul>
+<div class="eventos-box">
+  <ul id="eventos-lista"></ul>
+</div>
+
+<button id="crearEventoBtn" class="btn">➕ Crear evento</button>
+<a href="index.html" class="btn">⬅ Volver al inicio</a>
+
+<!-- Modal creación de evento -->
+<div id="eventoModal" class="modal">
+  <div class="modal-content">
+    <h3>📝 Crear nuevo evento</h3>
+    <input id="nombreEvento" type="text" placeholder="Nombre del evento">
+    <input id="diaEvento" type="date">
+    <input id="horaEvento" type="time">
+    <input id="lugarEvento" type="text" placeholder="Lugar / Plataforma / Discord">
+    <input id="imagenEvento" type="url" placeholder="URL de imagen/logo (opcional)">
+    <textarea id="descEvento" placeholder="Descripción del evento"></textarea>
+    <button id="guardarEventoBtn" class="btn">Guardar evento</button>
+    <button id="cancelEventoBtn" class="btn">Cancelar</button>
   </div>
+</div>
 
-  <button id="crearEventoBtn" class="btn">➕ Crear evento</button>
-  <a href="index.html" class="btn">⬅ Volver al inicio</a>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
-  <div id="passwordModal" class="modal">
-    <div class="modal-content">
-      <h3>🔒 Ingresa la contraseña</h3>
-      <input id="passwordInput" type="password" placeholder="Contraseña">
-      <button id="passwordSubmit" class="btn">Aceptar</button>
-      <button id="passwordCancel" class="btn">Cancelar</button>
-    </div>
-  </div>
+const firebaseConfig = {
+  apiKey: "AIzaSyAVK1jVFsEvjzjQYLPp4nkGdRdMNJ9psPc",
+  authDomain: "sepmc-2ab3d.firebaseapp.com",
+  databaseURL: "https://sepmc-2ab3d-default-rtdb.firebaseio.com",
+  projectId: "sepmc-2ab3d",
+  storageBucket: "sepmc-2ab3d.appspot.com",
+  messagingSenderId: "1015746236260",
+  appId: "1:1015746236260:web:baf7779cc6fcbb5757b471"
+};
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const eventosRef = ref(db, "eventos/lista");
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAVK1jVFsEvjzjQYLPp4nkGdRdMNJ9psPc",
-      authDomain: "sepmc-2ab3d.firebaseapp.com",
-      databaseURL: "https://sepmc-2ab3d-default-rtdb.firebaseio.com",
-      projectId: "sepmc-2ab3d",
-      storageBucket: "sepmc-2ab3d.appspot.com",
-      messagingSenderId: "1015746236260",
-      appId: "1:1015746236260:web:baf7779cc6fcbb5757b471"
-    };
+const lista = document.getElementById("eventos-lista");
+const modal = document.getElementById("eventoModal");
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const eventosRef = ref(db, "eventos/lista");
+// Mostrar eventos existentes
+onValue(eventosRef, snapshot => {
+  const data = snapshot.val() || [];
+  lista.innerHTML = "";
+  data.forEach(evento => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <strong>${evento.nombre}</strong> <br>
+      📅 ${evento.dia} ⏰ ${evento.hora} <br>
+      📍 ${evento.lugar} <br>
+      ${evento.imagen ? `<img src="${evento.imagen}" alt="Imagen" style="max-width:100px; border-radius:8px;"> <br>` : ""}
+      ${evento.descripcion ? `<em>${evento.descripcion}</em>` : ""}
+    `;
+    lista.appendChild(li);
+  });
+});
 
-    const lista = document.getElementById("eventos-lista");
+// Abrir modal
+document.getElementById("crearEventoBtn").addEventListener("click", () => {
+  modal.style.display = "flex";
+  // Limpiar inputs
+  document.getElementById("nombreEvento").value = "";
+  document.getElementById("diaEvento").value = "";
+  document.getElementById("horaEvento").value = "";
+  document.getElementById("lugarEvento").value = "";
+  document.getElementById("imagenEvento").value = "";
+  document.getElementById("descEvento").value = "";
+});
 
-    onValue(eventosRef, (snapshot) => {
-      const data = snapshot.val();
-      lista.innerHTML = "";
-      if (Array.isArray(data)) {
-        data.forEach(evento => {
-          const li = document.createElement("li");
-          li.textContent = evento;
-          lista.appendChild(li);
-        });
-      }
-    });
+// Cancelar modal
+document.getElementById("cancelEventoBtn").addEventListener("click", () => {
+  modal.style.display = "none";
+});
 
-    const modal = document.getElementById("passwordModal");
-    const inputPass = document.getElementById("passwordInput");
+// Guardar evento
+document.getElementById("guardarEventoBtn").addEventListener("click", async () => {
+  const nombre = document.getElementById("nombreEvento").value.trim();
+  const dia = document.getElementById("diaEvento").value;
+  const hora = document.getElementById("horaEvento").value;
+  const lugar = document.getElementById("lugarEvento").value.trim();
+  const imagen = document.getElementById("imagenEvento").value.trim();
+  const descripcion = document.getElementById("descEvento").value.trim();
 
-    document.getElementById("crearEventoBtn").addEventListener("click", () => {
-      modal.style.display = "flex";
-      inputPass.value = "";
-      inputPass.focus();
-    });
+  if (!nombre || !dia || !hora || !lugar) {
+    alert("❌ Completa todos los campos obligatorios.");
+    return;
+  }
 
-    document.getElementById("passwordCancel").addEventListener("click", () => {
-      modal.style.display = "none";
-    });
+  const nuevoEvento = { nombre, dia, hora, lugar, imagen, descripcion };
 
-    document.getElementById("passwordSubmit").addEventListener("click", () => {
-      if (inputPass.value !== "1771") {
-        alert("❌ Contraseña incorrecta.");
-        return;
-      }
+  // Obtener eventos actuales, agregar el nuevo y guardar
+  onValue(eventosRef, snapshot => {
+    const data = snapshot.val() || [];
+    data.push(nuevoEvento);
+    set(eventosRef, data);
+  }, { onlyOnce: true });
 
-      modal.style.display = "none";
+  modal.style.display = "none";
+  alert("✅ Evento creado con éxito.");
+});
+</script>
 
-      const nuevo = prompt("📝 Escribe el nuevo evento:");
-      if (!nuevo) return;
+</body>
+</html>
 
-      onValue(eventosRef, (snapshot) => {
-        const data = snapshot.val() || [];
-        data.push(nuevo);
-        set(eventosRef, data);
-      }, { onlyOnce: true });
-
-      alert("✅ Evento creado.");
-    });
   </script>
 
 </body>
