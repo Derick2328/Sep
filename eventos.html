@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eventos | SEP Minecraft</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0a0a0a, #003333, #0a0a0a, #001a1a);
+      background-size: 400% 400%;
+      animation: neonBackground 20s ease infinite;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
+
+    @keyframes neonBackground {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    h1 {
+      color: #00ffcc;
+      font-size: 3rem;
+      margin-top: 2rem;
+      text-shadow: 0 0 15px #00ffcc;
+    }
+
+    .eventos-box {
+      background: #111;
+      border: 2px solid #00ffcc;
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin: 2rem auto;
+      max-width: 800px;
+      box-shadow: 0 0 20px #00ffcc50;
+      text-align: left;
+    }
+
+    .eventos-box ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 1.2rem;
+    }
+
+    .eventos-box li {
+      background: #222;
+      border: 1px solid #555;
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      border-radius: 10px;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #111;
+      border: 2px solid #0ff;
+      color: #0ff;
+      padding: 0.8rem 1.5rem;
+      margin: 1rem auto;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: 0.2s ease;
+      font-size: 1.1rem;
+    }
+
+    .btn:hover {
+      background: #0ff;
+      color: #000;
+      box-shadow: 0 0 20px #0ff;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: #111;
+      padding: 20px;
+      border-radius: 15px;
+      border: 2px solid #0ff;
+      box-shadow: 0 0 15px #0ff;
+      text-align: center;
+      max-width: 300px;
+      width: 90%;
+    }
+
+    .modal input {
+      padding: 10px;
+      margin: 10px 0;
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #0ff;
+      background: #222;
+      color: #fff;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <h1>📅 Eventos del Servidor</h1>
+
+  <div class="eventos-box">
+    <ul id="eventos-lista"></ul>
+  </div>
+
+  <button id="crearEventoBtn" class="btn">➕ Crear evento</button>
+  <a href="index.html" class="btn">⬅ Volver al inicio</a>
+
+  <div id="passwordModal" class="modal">
+    <div class="modal-content">
+      <h3>🔒 Ingresa la contraseña</h3>
+      <input id="passwordInput" type="password" placeholder="Contraseña">
+      <button id="passwordSubmit" class="btn">Aceptar</button>
+      <button id="passwordCancel" class="btn">Cancelar</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAVK1jVFsEvjzjQYLPp4nkGdRdMNJ9psPc",
+      authDomain: "sepmc-2ab3d.firebaseapp.com",
+      databaseURL: "https://sepmc-2ab3d-default-rtdb.firebaseio.com",
+      projectId: "sepmc-2ab3d",
+      storageBucket: "sepmc-2ab3d.appspot.com",
+      messagingSenderId: "1015746236260",
+      appId: "1:1015746236260:web:baf7779cc6fcbb5757b471"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const eventosRef = ref(db, "eventos/lista");
+
+    const lista = document.getElementById("eventos-lista");
+
+    onValue(eventosRef, (snapshot) => {
+      const data = snapshot.val();
+      lista.innerHTML = "";
+      if (Array.isArray(data)) {
+        data.forEach(evento => {
+          const li = document.createElement("li");
+          li.textContent = evento;
+          lista.appendChild(li);
+        });
+      }
+    });
+
+    const modal = document.getElementById("passwordModal");
+    const inputPass = document.getElementById("passwordInput");
+
+    document.getElementById("crearEventoBtn").addEventListener("click", () => {
+      modal.style.display = "flex";
+      inputPass.value = "";
+      inputPass.focus();
+    });
+
+    document.getElementById("passwordCancel").addEventListener("click", () => {
+      modal.style.display = "none";
+    });
+
+    document.getElementById("passwordSubmit").addEventListener("click", () => {
+      if (inputPass.value !== "1771") {
+        alert("❌ Contraseña incorrecta.");
+        return;
+      }
+
+      modal.style.display = "none";
+
+      const nuevo = prompt("📝 Escribe el nuevo evento:");
+      if (!nuevo) return;
+
+      onValue(eventosRef, (snapshot) => {
+        const data = snapshot.val() || [];
+        data.push(nuevo);
+        set(eventosRef, data);
+      }, { onlyOnce: true });
+
+      alert("✅ Evento creado.");
+    });
+  </script>
+
+</body>
+</html>
