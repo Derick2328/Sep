@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Eventos | SEP Minecraft</title>
 <style>
   body {
@@ -35,16 +35,19 @@
     text-align: left;
   }
 
-  .eventos-box ul { list-style: none; padding: 0; margin: 0; font-size: 1.2rem; }
   .eventos-box li {
     background: #222;
     border: 1px solid #555;
     padding: 0.8rem;
     margin: 0.5rem 0;
     border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeIn 0.5s forwards;
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; transform: translateY(0); }
   }
 
   .btn {
@@ -63,20 +66,15 @@
 
   .btn:hover { background: #0ff; color: #000; box-shadow: 0 0 20px #0ff; }
 
-  /* Modal */
   .modal {
     display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(0,0,0,0.85);
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: center; justify-content: center;
     z-index: 1000;
-    animation: fadeIn 0.3s ease;
+    animation: fadeIn 0.3s forwards;
   }
-
-  @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
 
   .modal-content {
     background: #111;
@@ -84,28 +82,26 @@
     border-radius: 15px;
     border: 2px solid #0ff;
     box-shadow: 0 0 15px #0ff;
-    text-align: left;
+    text-align: center;
     max-width: 400px;
     width: 90%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    animation: slideDown 0.3s ease;
   }
 
-  @keyframes slideDown { from {transform: translateY(-20px); opacity:0;} to {transform: translateY(0); opacity:1;} }
-
-  .modal input, .modal select, .modal textarea {
+  .modal-content input, .modal-content textarea, .modal-content select {
     padding: 10px;
+    margin: 5px 0;
+    width: 100%;
     border-radius: 8px;
     border: 1px solid #0ff;
     background: #222;
     color: #fff;
-    width: 100%;
   }
 
-  .modal textarea { resize: vertical; min-height: 60px; }
-
+  .modal-content img {
+    max-width: 100px;
+    margin-top: 5px;
+    border-radius: 8px;
+  }
 </style>
 </head>
 <body>
@@ -113,24 +109,29 @@
 <h1>📅 Eventos del Servidor</h1>
 
 <div class="eventos-box">
-  <ul id="eventos-lista"></ul>
+  <ul id="eventos-lista">
+    <li>📌 No hay eventos. ¡Crea uno!</li>
+  </ul>
 </div>
 
 <button id="crearEventoBtn" class="btn">➕ Crear evento</button>
 <a href="index.html" class="btn">⬅ Volver al inicio</a>
 
-<!-- Modal creación de evento -->
-<div id="eventoModal" class="modal">
+<div id="eventModal" class="modal">
   <div class="modal-content">
-    <h3>📝 Crear nuevo evento</h3>
-    <input id="nombreEvento" type="text" placeholder="Nombre del evento">
-    <input id="diaEvento" type="date">
-    <input id="horaEvento" type="time">
-    <input id="lugarEvento" type="text" placeholder="Lugar / Plataforma / Discord">
-    <input id="imagenEvento" type="url" placeholder="URL de imagen/logo (opcional)">
-    <textarea id="descEvento" placeholder="Descripción del evento"></textarea>
-    <button id="guardarEventoBtn" class="btn">Guardar evento</button>
-    <button id="cancelEventoBtn" class="btn">Cancelar</button>
+    <h3>🔒 Ingresa la contraseña</h3>
+    <input id="passwordInput" type="password" placeholder="Contraseña">
+    <button id="passwordSubmit" class="btn">Aceptar</button>
+    <button id="passwordCancel" class="btn">Cancelar</button>
+    <div id="formEvento" style="display:none; margin-top:10px;">
+      <input type="text" id="nombreEvento" placeholder="Nombre del evento">
+      <input type="date" id="diaEvento">
+      <input type="time" id="horaEvento">
+      <input type="text" id="lugarEvento" placeholder="Lugar / Juego / Canal Discord">
+      <textarea id="descEvento" placeholder="Descripción"></textarea>
+      <input type="text" id="imgEvento" placeholder="URL de imagen/logo (opcional)">
+      <button id="guardarEvento" class="btn">💾 Guardar evento</button>
+    </div>
   </div>
 </div>
 
@@ -153,74 +154,73 @@ const db = getDatabase(app);
 const eventosRef = ref(db, "eventos/lista");
 
 const lista = document.getElementById("eventos-lista");
-const modal = document.getElementById("eventoModal");
+const modal = document.getElementById("eventModal");
+const passInput = document.getElementById("passwordInput");
+const passSubmit = document.getElementById("passwordSubmit");
+const passCancel = document.getElementById("passwordCancel");
+const formEvento = document.getElementById("formEvento");
 
-// Mostrar eventos existentes
+document.getElementById("crearEventoBtn").addEventListener("click", () => {
+  modal.style.display = "flex";
+  passInput.value = "";
+  passInput.focus();
+});
+
+passCancel.addEventListener("click", () => {
+  modal.style.display = "none";
+  formEvento.style.display = "none";
+});
+
+passSubmit.addEventListener("click", () => {
+  if(passInput.value !== "1771") {
+    alert("❌ Contraseña incorrecta.");
+    return;
+  }
+  formEvento.style.display = "block";
+});
+
+document.getElementById("guardarEvento").addEventListener("click", () => {
+  const nombre = document.getElementById("nombreEvento").value;
+  const dia = document.getElementById("diaEvento").value;
+  const hora = document.getElementById("horaEvento").value;
+  const lugar = document.getElementById("lugarEvento").value;
+  const desc = document.getElementById("descEvento").value;
+  const img = document.getElementById("imgEvento").value;
+
+  if(!nombre || !dia || !hora || !lugar) { alert("Completa todos los campos obligatorios"); return; }
+
+  const nuevoEvento = { nombre, dia, hora, lugar, descripcion: desc, imagen: img };
+
+  onValue(eventosRef, snapshot => {
+    const data = snapshot.val() || [];
+    data.push(nuevoEvento);
+    set(eventosRef, data);
+    modal.style.display = "none";
+    formEvento.style.display = "none";
+  }, { onlyOnce: true });
+});
+
+// Mostrar eventos en la página
 onValue(eventosRef, snapshot => {
   const data = snapshot.val() || [];
   lista.innerHTML = "";
+  if(data.length === 0) {
+    lista.innerHTML = '<li>📌 No hay eventos. ¡Crea uno!</li>';
+    return;
+  }
   data.forEach(evento => {
     const li = document.createElement("li");
     li.innerHTML = `
       <strong>${evento.nombre}</strong> <br>
       📅 ${evento.dia} ⏰ ${evento.hora} <br>
       📍 ${evento.lugar} <br>
-      ${evento.imagen ? `<img src="${evento.imagen}" alt="Imagen" style="max-width:100px; border-radius:8px;"> <br>` : ""}
+      ${evento.imagen ? `<img src="${evento.imagen}" alt="Imagen"> <br>` : ""}
       ${evento.descripcion ? `<em>${evento.descripcion}</em>` : ""}
     `;
     lista.appendChild(li);
   });
 });
-
-// Abrir modal
-document.getElementById("crearEventoBtn").addEventListener("click", () => {
-  modal.style.display = "flex";
-  // Limpiar inputs
-  document.getElementById("nombreEvento").value = "";
-  document.getElementById("diaEvento").value = "";
-  document.getElementById("horaEvento").value = "";
-  document.getElementById("lugarEvento").value = "";
-  document.getElementById("imagenEvento").value = "";
-  document.getElementById("descEvento").value = "";
-});
-
-// Cancelar modal
-document.getElementById("cancelEventoBtn").addEventListener("click", () => {
-  modal.style.display = "none";
-});
-
-// Guardar evento
-document.getElementById("guardarEventoBtn").addEventListener("click", async () => {
-  const nombre = document.getElementById("nombreEvento").value.trim();
-  const dia = document.getElementById("diaEvento").value;
-  const hora = document.getElementById("horaEvento").value;
-  const lugar = document.getElementById("lugarEvento").value.trim();
-  const imagen = document.getElementById("imagenEvento").value.trim();
-  const descripcion = document.getElementById("descEvento").value.trim();
-
-  if (!nombre || !dia || !hora || !lugar) {
-    alert("❌ Completa todos los campos obligatorios.");
-    return;
-  }
-
-  const nuevoEvento = { nombre, dia, hora, lugar, imagen, descripcion };
-
-  // Obtener eventos actuales, agregar el nuevo y guardar
-  onValue(eventosRef, snapshot => {
-    const data = snapshot.val() || [];
-    data.push(nuevoEvento);
-    set(eventosRef, data);
-  }, { onlyOnce: true });
-
-  modal.style.display = "none";
-  alert("✅ Evento creado con éxito.");
-});
 </script>
-
-</body>
-</html>
-
-  </script>
 
 </body>
 </html>
