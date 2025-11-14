@@ -16,17 +16,20 @@
       color: #fff;
       text-align: center;
     }
+
     @keyframes neonBackground {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
+
     h1 {
       color: #00ffcc;
       font-size: 3rem;
       margin-top: 2rem;
       text-shadow: 0 0 15px #00ffcc;
     }
+
     .ip-box {
       background: #111;
       border: 2px solid #00ffcc;
@@ -36,12 +39,10 @@
       margin: 1rem auto;
       box-shadow: 0 0 20px #00ffcc50;
     }
+
     .ip-box p { margin: 0.5rem 0; }
-    .ip {
-      font-weight: bold;
-      font-size: 1.2rem;
-      color: #0ff;
-    }
+    .ip { font-weight: bold; font-size: 1.2rem; color: #0ff; }
+
     .btn {
       display: block;
       background: #111;
@@ -54,11 +55,13 @@
       transition: 0.2s ease;
       max-width: 300px;
     }
+
     .btn:hover {
       background: #0ff;
       color: #000;
       box-shadow: 0 0 20px #0ff;
     }
+
     .anuncios {
       background: #111;
       border: 2px solid #ff0;
@@ -69,6 +72,7 @@
       max-width: 90%;
       text-align: left;
     }
+
     .anuncios h2 {
       color: #ff0;
       text-shadow: 0 0 10px #ff0;
@@ -77,12 +81,14 @@
       align-items: center;
       justify-content: space-between;
     }
+
     .anuncios ul {
       list-style: none;
       padding: 0;
       color: #fff;
       margin: 0;
     }
+
     .anuncios li {
       background: #222;
       border: 1px solid #555;
@@ -90,6 +96,7 @@
       margin: 0.5rem 0;
       border-radius: 10px;
     }
+
     .edit-icon {
       cursor: pointer;
       font-size: 1.2rem;
@@ -98,6 +105,7 @@
       transition: 0.3s;
       user-select: none;
     }
+
     .edit-icon:hover { color: #fff; }
 
     .social-icons {
@@ -107,11 +115,13 @@
       flex-wrap: wrap;
       margin-top: 2rem;
     }
+
     .social-icons a img {
       height: 48px;
       border-radius: 10px;
       transition: 0.3s;
     }
+
     .social-icons a img:hover {
       filter: brightness(1.2);
     }
@@ -132,6 +142,7 @@
       justify-content: center;
       z-index: 1000;
     }
+
     .modal-content {
       background: #111;
       padding: 20px;
@@ -142,6 +153,7 @@
       max-width: 300px;
       width: 90%;
     }
+
     .modal input {
       padding: 10px;
       margin: 10px 0;
@@ -151,6 +163,7 @@
       background: #222;
       color: #fff;
     }
+
     .modal button {
       padding: 8px 15px;
       margin-top: 5px;
@@ -162,6 +175,7 @@
       font-weight: bold;
       transition: 0.2s;
     }
+
     .modal button:hover { background: #00cccc; }
   </style>
 </head>
@@ -178,7 +192,7 @@
 
   <a class="btn" href="reglas">📜 Ver reglas</a>
   <a class="btn" href="staff">👑 Ver staff</a>
-  <a id="notifyBtn" class="btn" href="https://youtube.com/@sep_minecraft" target="_blank">📱SEP youtube subió ‼️</a>
+  <a class="btn" href="eventos.html">📅 Eventos</a>
 
   <div class="anuncios">
     <h2>
@@ -195,7 +209,7 @@
     </a>
   </div>
 
-  <div class="footer">© 2025 SEP Minecraft | Página creada por Yalmil</div>
+  <div class="footer">© 2025 SEP Minecraft | Página creada por Derick</div>
 
   <div id="passwordModal" class="modal" style="display:none;">
     <div class="modal-content">
@@ -273,12 +287,6 @@
           .catch(error => { alert("❌ Error al guardar anuncios:\n" + error.message); });
       }
     });
-
-    const notifyBtn = document.getElementById("notifyBtn");
-    notifyBtn.addEventListener("click", () => {
-      notifyBtn.textContent = "SEP subió";
-    });
-
   </script>
 
 </body>
