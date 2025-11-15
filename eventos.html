@@ -172,29 +172,27 @@ function mostrarEventos() {
     `;
     lista.appendChild(li);
 
-    li.querySelector(".delete-btn").addEventListener("click", ()=>{
-      pedirPassword().then(ok=>{
-        if(!ok) return;
-        eventos.splice(i,1);
-        localStorage.setItem("eventos", JSON.stringify(eventos));
-        mostrarEventos();
-      });
+    li.querySelector(".delete-btn").addEventListener("click", async ()=>{
+      const ok = await pedirPassword();
+      if(!ok) return;
+      eventos.splice(i,1);
+      localStorage.setItem("eventos", JSON.stringify(eventos));
+      mostrarEventos();
     });
   });
 }
 
-// Pedir contraseña
+// Función para pedir contraseña
 function pedirPassword(){
   return new Promise(resolve=>{
     modal.style.display = "flex";
-    formEvento.style.display = "none";
+    formEvento.style.display = "none"; // ocultamos el formulario mientras pedimos contraseña
     passInput.value = "";
     passInput.focus();
 
     function aceptar(){
       if(passInput.value !== "1771"){
         alert("❌ Contraseña incorrecta.");
-        resolve(false);
         return;
       }
       cleanup();
@@ -207,7 +205,6 @@ function pedirPassword(){
     }
 
     function cleanup(){
-      modal.style.display = "none";
       passSubmit.removeEventListener("click", aceptar);
       passCancel.removeEventListener("click", cancelar);
     }
@@ -221,6 +218,7 @@ function pedirPassword(){
 crearBtn.addEventListener("click", async ()=>{
   const ok = await pedirPassword();
   if(!ok) return;
+  // mostrar formulario dentro del modal
   formEvento.style.display = "block";
 });
 
@@ -266,6 +264,7 @@ guardarBtn.addEventListener("click", ()=>{
 });
 
 mostrarEventos();
+
 </script>
 
 </body>
