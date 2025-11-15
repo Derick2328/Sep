@@ -50,7 +50,6 @@
     opacity: 0;
     transform: translateY(20px);
     animation: fadeIn 0.5s forwards;
-    position: relative;
   }
 
   @keyframes fadeIn {
@@ -76,26 +75,7 @@
     color: #000;
     box-shadow: 0 0 20px #0ff;
   }
-
-  /* BOTÓN BORRAR */
-  .borrar-btn {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: transparent;
-    border: none;
-    font-size: 22px;
-    cursor: pointer;
-    color: #ff4444;
-    text-shadow: 0 0 5px #ff4444;
-  }
-
-  .borrar-btn:hover {
-    transform: scale(1.2);
-  }
-
 </style>
-
 </head>
 <body>
 
@@ -110,7 +90,7 @@
 <button id="crearEventoBtn" class="btn">➕ Crear evento</button>
 <a href="index.html" class="btn">⬅ Volver al inicio</a>
 
-<!-- FORMULARIO SIN CONTRASEÑA VISIBLE -->
+<!-- FORMULARIO -->
 <div id="eventForm" style="display:none;" class="eventos-box">
   <h3>Crear nuevo evento</h3>
 
@@ -119,15 +99,14 @@
   <input type="time" id="horaEvento">
   <input type="text" id="lugarEvento" placeholder="Lugar / Juego / Canal Discord">
   <textarea id="descEvento" placeholder="Descripción"></textarea>
-  <input type="text" id="imgEvento" placeholder="URL de imagen/logo (opcional)">
-  
+  <input type="file" id="imgFile" accept="image/*">
   <button id="guardarEvento" class="btn">💾 Guardar evento</button>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-import { getDatabase, ref, onValue, set, get }
-from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-storage.js";
 
 /* CONFIG FIREBASE */
 const firebaseConfig = {
@@ -142,46 +121,59 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+const storage = getStorage(app);
 const eventosRef = ref(db, "eventos/lista");
 
+/* ELEMENTOS */
 const lista = document.getElementById("eventos-lista");
+const crearBtn = document.getElementById("crearEventoBtn");
+const form = document.getElementById("eventForm");
+const guardarBtn = document.getElementById("guardarEvento");
+const imgFile = document.getElementById("imgFile");
 
-/* CREAR EVENTO: PIDE CONTRASEÑA */
-document.getElementById("crearEventoBtn").addEventListener("click", () => {
-  const pass = prompt("🔒 Ingresa la contraseña para crear eventos:");
-
-  if (pass !== "1771") {
-    alert("❌ Contraseña incorrecta.");
-    return;
-  }
-
-  document.getElementById("eventForm").style.display = "block";
+/* ABRIR FORM */
+crearBtn.addEventListener("click", () => {
+  form.style.display = "block";
 });
 
 /* GUARDAR EVENTO */
-document.getElementById("guardarEvento").addEventListener("click", async () => {
-  const nuevoEvento = {
-    nombre: document.getElementById("nombreEvento").value,
-    dia: document.getElementById("diaEvento").value,
-    hora: document.getElementById("horaEvento").value,
-    lugar: document.getElementById("lugarEvento").value,
-    descripcion: document.getElementById("descEvento").value,
-    imagen: document.getElementById("imgEvento").value
-  };
+guardarBtn.addEventListener("click", async () => {
+  const nombre = document.getElementById("nombreEvento").value;
+  const dia = document.getElementById("diaEvento").value;
+  const hora = document.getElementById("horaEvento").value;
+  const lugar = document.getElementById("lugarEvento").value;
+  const desc = document.getElementById("descEvento").value;
 
-  if (!nuevoEvento.nombre || !nuevoEvento.dia || !nuevoEvento.hora || !nuevoEvento.lugar) {
-    alert("❌ Completa todos los campos obligatorios.");
+  if (!nombre || !dia || !hora || !lugar) {
+    alert("❌ Completa los campos obligatorios");
     return;
   }
 
+  let imagenURL = "";
+  if (imgFile.files.length > 0) {
+    const file = imgFile.files[0];
+    const storageRef = sRef(storage, `eventos/${Date.now()}_${file.name}`);
+    await uploadBytes(storageRef, file);
+    imagenURL = await getDownloadURL(storageRef);
+  }
+
   const snap = await get(eventosRef);
-  let data = snap.val() || [];
-  data.push(nuevoEvento);
+  const data = snap.val() || [];
+
+  data.push({ nombre, dia, hora, lugar, descripcion: desc, imagen: imagenURL });
 
   await set(eventosRef, data);
 
   alert("✅ Evento creado!");
-  document.getElementById("eventForm").style.display = "none";
+  form.style.display = "none";
+
+  // Limpiar campos
+  document.getElementById("nombreEvento").value = "";
+  document.getElementById("diaEvento").value = "";
+  document.getElementById("horaEvento").value = "";
+  document.getElementById("lugarEvento").value = "";
+  document.getElementById("descEvento").value = "";
+  imgFile.value = "";
 });
 
 /* MOSTRAR EVENTOS */
@@ -194,45 +186,18 @@ onValue(eventosRef, snapshot => {
     return;
   }
 
-  data.forEach((evento, index) => {
+  data.forEach(evento => {
     const li = document.createElement("li");
-
     li.innerHTML = `
-      <button class="borrar-btn" data-index="${index}">🗑️</button>
       <strong>${evento.nombre}</strong><br>
       📅 ${evento.dia} ⏰ ${evento.hora}<br>
       📍 ${evento.lugar}<br>
-      ${evento.imagen ? `<img src="${evento.imagen}" alt="imagen" style="max-width:120px;border-radius:10px;margin-top:8px;"><br>` : ""}
+      ${evento.imagen ? `<img src="${evento.imagen}" style="max-width:150px;"><br>` : ""}
       ${evento.descripcion ? `<em>${evento.descripcion}</em>` : ""}
     `;
-
     lista.appendChild(li);
   });
 });
-
-/* BORRAR EVENTO (CON CONTRASEÑA) */
-document.addEventListener("click", async (e) => {
-  if (e.target.classList.contains("borrar-btn")) {
-    const index = e.target.getAttribute("data-index");
-
-    const pass = prompt("🔒 Ingresa la contraseña para borrar este evento:");
-
-    if (pass !== "1771") {
-      alert("❌ Contraseña incorrecta.");
-      return;
-    }
-
-    const snap = await get(eventosRef);
-    let data = snap.val() || [];
-
-    data.splice(index, 1);
-
-    await set(eventosRef, data);
-
-    alert("🗑️ Evento eliminado");
-  }
-});
-
 </script>
 
 </body>
