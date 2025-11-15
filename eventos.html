@@ -50,6 +50,7 @@
     opacity: 0;
     transform: translateY(20px);
     animation: fadeIn 0.5s forwards;
+    position: relative;
   }
 
   @keyframes fadeIn {
@@ -76,45 +77,23 @@
     box-shadow: 0 0 20px #0ff;
   }
 
-  /* ✔ FIX: Modal NO aparece al cargar */
-  .modal {
-    display: none;
-    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.85);
-    align-items: center; 
-    justify-content: center;
-    z-index: 1000;
-    animation: fadeIn 0.3s forwards;
+  /* BOTÓN BORRAR */
+  .borrar-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: transparent;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: #ff4444;
+    text-shadow: 0 0 5px #ff4444;
   }
 
-  .modal-content {
-    background: #111;
-    padding: 20px;
-    border-radius: 15px;
-    border: 2px solid #0ff;
-    box-shadow: 0 0 15px #0ff;
-    text-align: center;
-    max-width: 400px;
-    width: 90%;
+  .borrar-btn:hover {
+    transform: scale(1.2);
   }
 
-  .modal-content input,
-  .modal-content textarea,
-  .modal-content select {
-    padding: 10px;
-    margin: 5px 0;
-    width: 100%;
-    border-radius: 8px;
-    border: 1px solid #0ff;
-    background: #222;
-    color: #fff;
-  }
-
-  .modal-content img {
-    max-width: 100px;
-    margin-top: 5px;
-    border-radius: 8px;
-  }
 </style>
 
 </head>
@@ -131,27 +110,18 @@
 <button id="crearEventoBtn" class="btn">➕ Crear evento</button>
 <a href="index.html" class="btn">⬅ Volver al inicio</a>
 
-<!-- MODAL -->
-<div id="eventModal" class="modal">
-  <div class="modal-content">
-    <h3>🔒 Ingresa la contraseña</h3>
+<!-- FORMULARIO SIN CONTRASEÑA VISIBLE -->
+<div id="eventForm" style="display:none;" class="eventos-box">
+  <h3>Crear nuevo evento</h3>
 
-    <input id="passwordInput" type="password" placeholder="Contraseña">
-    <button id="passwordSubmit" class="btn">Aceptar</button>
-    <button id="passwordCancel" class="btn">Cancelar</button>
-
-    <!-- FORMULARIO EVENTO -->
-    <div id="formEvento" style="display:none; margin-top:10px;">
-      <input type="text" id="nombreEvento" placeholder="Nombre del evento">
-      <input type="date" id="diaEvento">
-      <input type="time" id="horaEvento">
-      <input type="text" id="lugarEvento" placeholder="Lugar / Juego / Canal Discord">
-      <textarea id="descEvento" placeholder="Descripción"></textarea>
-      <input type="text" id="imgEvento" placeholder="URL de imagen/logo (opcional)">
-      <button id="guardarEvento" class="btn">💾 Guardar evento</button>
-    </div>
-
-  </div>
+  <input type="text" id="nombreEvento" placeholder="Nombre del evento">
+  <input type="date" id="diaEvento">
+  <input type="time" id="horaEvento">
+  <input type="text" id="lugarEvento" placeholder="Lugar / Juego / Canal Discord">
+  <textarea id="descEvento" placeholder="Descripción"></textarea>
+  <input type="text" id="imgEvento" placeholder="URL de imagen/logo (opcional)">
+  
+  <button id="guardarEvento" class="btn">💾 Guardar evento</button>
 </div>
 
 <script type="module">
@@ -174,34 +144,18 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const eventosRef = ref(db, "eventos/lista");
 
-/* ELEMENTOS */
 const lista = document.getElementById("eventos-lista");
-const modal = document.getElementById("eventModal");
-const passInput = document.getElementById("passwordInput");
-const passSubmit = document.getElementById("passwordSubmit");
-const passCancel = document.getElementById("passwordCancel");
-const formEvento = document.getElementById("formEvento");
 
-/* ABRIR MODAL */
+/* CREAR EVENTO: PIDE CONTRASEÑA */
 document.getElementById("crearEventoBtn").addEventListener("click", () => {
-  modal.style.display = "flex";
-  formEvento.style.display = "none";
-  passInput.value = "";
-  passInput.focus();
-});
+  const pass = prompt("🔒 Ingresa la contraseña para crear eventos:");
 
-/* CERRAR MODAL */
-passCancel.addEventListener("click", () => {
-  modal.style.display = "none";
-});
-
-/* VERIFICAR CONTRASEÑA */
-passSubmit.addEventListener("click", () => {
-  if (passInput.value !== "1771") {
+  if (pass !== "1771") {
     alert("❌ Contraseña incorrecta.");
     return;
   }
-  formEvento.style.display = "block";
+
+  document.getElementById("eventForm").style.display = "block";
 });
 
 /* GUARDAR EVENTO */
@@ -227,8 +181,7 @@ document.getElementById("guardarEvento").addEventListener("click", async () => {
   await set(eventosRef, data);
 
   alert("✅ Evento creado!");
-  modal.style.display = "none";
-  formEvento.style.display = "none";
+  document.getElementById("eventForm").style.display = "none";
 });
 
 /* MOSTRAR EVENTOS */
@@ -241,18 +194,45 @@ onValue(eventosRef, snapshot => {
     return;
   }
 
-  data.forEach(evento => {
+  data.forEach((evento, index) => {
     const li = document.createElement("li");
+
     li.innerHTML = `
+      <button class="borrar-btn" data-index="${index}">🗑️</button>
       <strong>${evento.nombre}</strong><br>
       📅 ${evento.dia} ⏰ ${evento.hora}<br>
       📍 ${evento.lugar}<br>
-      ${evento.imagen ? `<img src="${evento.imagen}" alt="imagen"><br>` : ""}
+      ${evento.imagen ? `<img src="${evento.imagen}" alt="imagen" style="max-width:120px;border-radius:10px;margin-top:8px;"><br>` : ""}
       ${evento.descripcion ? `<em>${evento.descripcion}</em>` : ""}
     `;
+
     lista.appendChild(li);
   });
 });
+
+/* BORRAR EVENTO (CON CONTRASEÑA) */
+document.addEventListener("click", async (e) => {
+  if (e.target.classList.contains("borrar-btn")) {
+    const index = e.target.getAttribute("data-index");
+
+    const pass = prompt("🔒 Ingresa la contraseña para borrar este evento:");
+
+    if (pass !== "1771") {
+      alert("❌ Contraseña incorrecta.");
+      return;
+    }
+
+    const snap = await get(eventosRef);
+    let data = snap.val() || [];
+
+    data.splice(index, 1);
+
+    await set(eventosRef, data);
+
+    alert("🗑️ Evento eliminado");
+  }
+});
+
 </script>
 
 </body>
