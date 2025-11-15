@@ -183,10 +183,11 @@ function mostrarEventos() {
 }
 
 // Función para pedir contraseña
+
 function pedirPassword(){
   return new Promise(resolve=>{
     modal.style.display = "flex";
-    formEvento.style.display = "none"; // ocultamos el formulario mientras pedimos contraseña
+    formEvento.style.display = "none"; 
     passInput.value = "";
     passInput.focus();
 
@@ -207,6 +208,9 @@ function pedirPassword(){
     function cleanup(){
       passSubmit.removeEventListener("click", aceptar);
       passCancel.removeEventListener("click", cancelar);
+
+      // 🔥 FALTABA ESTO: cerrar modal siempre
+      modal.style.display = "none";
     }
 
     passSubmit.addEventListener("click", aceptar);
@@ -214,6 +218,7 @@ function pedirPassword(){
   });
 }
 
+  
 // Crear evento
 crearBtn.addEventListener("click", async ()=>{
   const ok = await pedirPassword();
