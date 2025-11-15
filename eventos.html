@@ -16,20 +16,17 @@
     text-align: center;
     padding: 20px;
   }
-
   @keyframes neonBackground {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
   }
-
   h1 {
     color: #00ffcc;
     font-size: 3rem;
     margin-top: 2rem;
     text-shadow: 0 0 15px #00ffcc;
   }
-
   .eventos-box {
     background: #111;
     border: 2px solid #00ffcc;
@@ -40,8 +37,8 @@
     box-shadow: 0 0 20px #00ffcc50;
     text-align: left;
   }
-
   .eventos-box li {
+    position: relative;
     background: #222;
     border: 1px solid #555;
     padding: 0.8rem;
@@ -51,11 +48,14 @@
     transform: translateY(20px);
     animation: fadeIn 0.5s forwards;
   }
-
-  @keyframes fadeIn {
-    to { opacity: 1; transform: translateY(0); }
+  .delete-btn {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 1.2rem;
   }
-
+  @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
   .btn {
     display: inline-block;
     background: #111;
@@ -69,11 +69,41 @@
     font-size: 1.1rem;
     cursor: pointer;
   }
+  .btn:hover { background: #0ff; color: #000; box-shadow: 0 0 20px #0ff; }
 
-  .btn:hover {
-    background: #0ff;
-    color: #000;
-    box-shadow: 0 0 20px #0ff;
+  .modal {
+    display: none;
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.85);
+    align-items: center; 
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s forwards;
+  }
+  .modal-content {
+    background: #111;
+    padding: 20px;
+    border-radius: 15px;
+    border: 2px solid #0ff;
+    box-shadow: 0 0 15px #0ff;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+  }
+  .modal-content input,
+  .modal-content textarea {
+    padding: 10px;
+    margin: 5px 0;
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid #0ff;
+    background: #222;
+    color: #fff;
+  }
+  .modal-content img {
+    max-width: 100px;
+    margin-top: 5px;
+    border-radius: 8px;
   }
 </style>
 </head>
@@ -90,114 +120,152 @@
 <button id="crearEventoBtn" class="btn">➕ Crear evento</button>
 <a href="index.html" class="btn">⬅ Volver al inicio</a>
 
-<!-- FORMULARIO -->
-<div id="eventForm" style="display:none;" class="eventos-box">
-  <h3>Crear nuevo evento</h3>
+<!-- MODAL -->
+<div id="eventModal" class="modal">
+  <div class="modal-content">
+    <h3>🔒 Ingresa la contraseña</h3>
+    <input id="passwordInput" type="password" placeholder="Contraseña">
+    <button id="passwordSubmit" class="btn">Aceptar</button>
+    <button id="passwordCancel" class="btn">Cancelar</button>
 
-  <input type="text" id="nombreEvento" placeholder="Nombre del evento">
-  <input type="date" id="diaEvento">
-  <input type="time" id="horaEvento">
-  <input type="text" id="lugarEvento" placeholder="Lugar / Juego / Canal Discord">
-  <textarea id="descEvento" placeholder="Descripción"></textarea>
-  <input type="file" id="imgFile" accept="image/*">
-  <button id="guardarEvento" class="btn">💾 Guardar evento</button>
+    <!-- FORMULARIO EVENTO -->
+    <div id="formEvento" style="display:none; margin-top:10px;">
+      <input type="text" id="nombreEvento" placeholder="Nombre del evento">
+      <input type="date" id="diaEvento">
+      <input type="time" id="horaEvento">
+      <input type="text" id="lugarEvento" placeholder="Lugar / Juego / Canal Discord">
+      <textarea id="descEvento" placeholder="Descripción"></textarea>
+      <input type="file" id="imgEvento" accept="image/*">
+      <button id="guardarEvento" class="btn">💾 Guardar evento</button>
+    </div>
+  </div>
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
-import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-storage.js";
-
-/* CONFIG FIREBASE */
-const firebaseConfig = {
-  apiKey: "AIzaSyAVK1jVFsEvjzjQYLPp4nkGdRdMNJ9psPc",
-  authDomain: "sepmc-2ab3d.firebaseapp.com",
-  databaseURL: "https://sepmc-2ab3d-default-rtdb.firebaseio.com",
-  projectId: "sepmc-2ab3d",
-  storageBucket: "sepmc-2ab3d.appspot.com",
-  messagingSenderId: "1015746236260",
-  appId: "1:1015746236260:web:baf7779cc6fcbb5757b471"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const storage = getStorage(app);
-const eventosRef = ref(db, "eventos/lista");
-
-/* ELEMENTOS */
+<script>
 const lista = document.getElementById("eventos-lista");
+const modal = document.getElementById("eventModal");
+const passInput = document.getElementById("passwordInput");
+const passSubmit = document.getElementById("passwordSubmit");
+const passCancel = document.getElementById("passwordCancel");
+const formEvento = document.getElementById("formEvento");
 const crearBtn = document.getElementById("crearEventoBtn");
-const form = document.getElementById("eventForm");
 const guardarBtn = document.getElementById("guardarEvento");
-const imgFile = document.getElementById("imgFile");
 
-/* ABRIR FORM */
-crearBtn.addEventListener("click", () => {
-  form.style.display = "block";
+let eventos = JSON.parse(localStorage.getItem("eventos")) || [];
+
+// Función para mostrar eventos
+function mostrarEventos() {
+  lista.innerHTML = "";
+  if(eventos.length===0){
+    lista.innerHTML = '<li>📌 No hay eventos. ¡Crea uno!</li>';
+    return;
+  }
+  eventos.forEach((e,i)=>{
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <strong>${e.nombre}</strong><br>
+      📅 ${e.dia} ⏰ ${e.hora}<br>
+      📍 ${e.lugar}<br>
+      ${e.imagen ? `<img src="${e.imagen}" alt="imagen"><br>` : ""}
+      ${e.descripcion ? `<em>${e.descripcion}</em>` : ""}
+      <span class="delete-btn" title="Borrar evento">🗑️</span>
+    `;
+    lista.appendChild(li);
+
+    li.querySelector(".delete-btn").addEventListener("click", ()=>{
+      pedirPassword().then(ok=>{
+        if(!ok) return;
+        eventos.splice(i,1);
+        localStorage.setItem("eventos", JSON.stringify(eventos));
+        mostrarEventos();
+      });
+    });
+  });
+}
+
+// Pedir contraseña
+function pedirPassword(){
+  return new Promise(resolve=>{
+    modal.style.display = "flex";
+    formEvento.style.display = "none";
+    passInput.value = "";
+    passInput.focus();
+
+    function aceptar(){
+      if(passInput.value !== "1771"){
+        alert("❌ Contraseña incorrecta.");
+        resolve(false);
+        return;
+      }
+      cleanup();
+      resolve(true);
+    }
+
+    function cancelar(){
+      cleanup();
+      resolve(false);
+    }
+
+    function cleanup(){
+      modal.style.display = "none";
+      passSubmit.removeEventListener("click", aceptar);
+      passCancel.removeEventListener("click", cancelar);
+    }
+
+    passSubmit.addEventListener("click", aceptar);
+    passCancel.addEventListener("click", cancelar);
+  });
+}
+
+// Crear evento
+crearBtn.addEventListener("click", async ()=>{
+  const ok = await pedirPassword();
+  if(!ok) return;
+  formEvento.style.display = "block";
 });
 
-/* GUARDAR EVENTO */
-guardarBtn.addEventListener("click", async () => {
+// Guardar evento
+guardarBtn.addEventListener("click", ()=>{
   const nombre = document.getElementById("nombreEvento").value;
   const dia = document.getElementById("diaEvento").value;
   const hora = document.getElementById("horaEvento").value;
   const lugar = document.getElementById("lugarEvento").value;
   const desc = document.getElementById("descEvento").value;
+  const fileInput = document.getElementById("imgEvento");
 
-  if (!nombre || !dia || !hora || !lugar) {
-    alert("❌ Completa los campos obligatorios");
+  if(!nombre || !dia || !hora || !lugar){
+    alert("❌ Completa todos los campos obligatorios.");
     return;
   }
 
-  let imagenURL = "";
-  if (imgFile.files.length > 0) {
-    const file = imgFile.files[0];
-    const storageRef = sRef(storage, `eventos/${Date.now()}_${file.name}`);
-    await uploadBytes(storageRef, file);
-    imagenURL = await getDownloadURL(storageRef);
+  const reader = new FileReader();
+  reader.onload = function(e){
+    eventos.push({
+      nombre,
+      dia,
+      hora,
+      lugar,
+      descripcion: desc,
+      imagen: e.target.result
+    });
+    localStorage.setItem("eventos", JSON.stringify(eventos));
+    mostrarEventos();
+    formEvento.style.display = "none";
+    modal.style.display = "none";
+  };
+
+  if(fileInput.files[0]){
+    reader.readAsDataURL(fileInput.files[0]);
+  } else {
+    eventos.push({nombre,dia,hora,lugar,descripcion:desc,imagen:""});
+    localStorage.setItem("eventos", JSON.stringify(eventos));
+    mostrarEventos();
+    formEvento.style.display = "none";
+    modal.style.display = "none";
   }
-
-  const snap = await get(eventosRef);
-  const data = snap.val() || [];
-
-  data.push({ nombre, dia, hora, lugar, descripcion: desc, imagen: imagenURL });
-
-  await set(eventosRef, data);
-
-  alert("✅ Evento creado!");
-  form.style.display = "none";
-
-  // Limpiar campos
-  document.getElementById("nombreEvento").value = "";
-  document.getElementById("diaEvento").value = "";
-  document.getElementById("horaEvento").value = "";
-  document.getElementById("lugarEvento").value = "";
-  document.getElementById("descEvento").value = "";
-  imgFile.value = "";
 });
 
-/* MOSTRAR EVENTOS */
-onValue(eventosRef, snapshot => {
-  const data = snapshot.val() || [];
-  lista.innerHTML = "";
-
-  if (data.length === 0) {
-    lista.innerHTML = '<li>📌 No hay eventos. ¡Crea uno!</li>';
-    return;
-  }
-
-  data.forEach(evento => {
-    const li = document.createElement("li");
-    li.innerHTML = `
-      <strong>${evento.nombre}</strong><br>
-      📅 ${evento.dia} ⏰ ${evento.hora}<br>
-      📍 ${evento.lugar}<br>
-      ${evento.imagen ? `<img src="${evento.imagen}" style="max-width:150px;"><br>` : ""}
-      ${evento.descripcion ? `<em>${evento.descripcion}</em>` : ""}
-    `;
-    lista.appendChild(li);
-  });
-});
+mostrarEventos();
 </script>
 
 </body>
