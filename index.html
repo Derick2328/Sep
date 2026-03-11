@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SEP Minecraft</title>
 
 <style>
-
 body{
 margin:0;
 font-family:'Segoe UI',sans-serif;
@@ -17,20 +15,17 @@ animation:neonBackground 20s ease infinite;
 color:#fff;
 text-align:center;
 }
-
 @keyframes neonBackground{
 0%{background-position:0% 50%;}
 50%{background-position:100% 50%;}
 100%{background-position:0% 50%;}
 }
-
 h1{
 color:#00ffcc;
 font-size:3rem;
 margin-top:2rem;
 text-shadow:0 0 15px #00ffcc;
 }
-
 .ip-box{
 background:#111;
 border:2px solid #00ffcc;
@@ -40,13 +35,11 @@ display:inline-block;
 margin:1rem auto;
 box-shadow:0 0 20px #00ffcc50;
 }
-
 .ip{
 font-weight:bold;
 font-size:1.2rem;
 color:#0ff;
 }
-
 .btn{
 display:block;
 background:#111;
@@ -59,13 +52,11 @@ text-decoration:none;
 transition:0.2s;
 max-width:300px;
 }
-
 .btn:hover{
 background:#0ff;
 color:#000;
 box-shadow:0 0 20px #0ff;
 }
-
 .anuncios{
 background:#111;
 border:2px solid #ff0;
@@ -76,19 +67,16 @@ margin:2rem auto;
 max-width:90%;
 text-align:left;
 }
-
 .anuncios h2{
 color:#ff0;
 text-shadow:0 0 10px #ff0;
 display:flex;
 justify-content:space-between;
 }
-
 .anuncios ul{
 list-style:none;
 padding:0;
 }
-
 .anuncios li{
 background:#222;
 border:1px solid #555;
@@ -99,7 +87,6 @@ display:flex;
 justify-content:space-between;
 align-items:center;
 }
-
 .deleteBtn{
 background:red;
 border:none;
@@ -108,7 +95,6 @@ padding:4px 8px;
 border-radius:6px;
 cursor:pointer;
 }
-
 .social-icons{
 display:flex;
 justify-content:center;
@@ -116,23 +102,19 @@ gap:20px;
 flex-wrap:wrap;
 margin-top:2rem;
 }
-
 .social-icons img{
 height:48px;
 border-radius:10px;
 transition:.3s;
 }
-
 .social-icons img:hover{
 filter:brightness(1.3);
 }
-
 .footer{
 margin-top:3rem;
 font-size:.9rem;
 color:#888;
 }
-
 .modal{
 display:none;
 position:fixed;
@@ -144,7 +126,6 @@ background:rgba(0,0,0,.8);
 align-items:center;
 justify-content:center;
 }
-
 .modal-content{
 background:#111;
 padding:20px;
@@ -154,7 +135,6 @@ box-shadow:0 0 15px #0ff;
 max-width:300px;
 width:90%;
 }
-
 .modal input{
 padding:10px;
 margin:10px 0;
@@ -164,7 +144,6 @@ border:1px solid #0ff;
 background:#222;
 color:#fff;
 }
-
 .modal button{
 padding:8px 15px;
 border:none;
@@ -174,15 +153,12 @@ background:#0ff;
 color:#000;
 font-weight:bold;
 }
-
 .adminPanel{
 display:none;
 margin-top:10px;
 }
-
 </style>
 </head>
-
 <body>
 
 <h1>🌟 SEP Minecraft 🌟</h1>
@@ -198,31 +174,24 @@ margin-top:10px;
 <a class="btn" href="eventos">📅 Eventos</a>
 
 <div class="anuncios">
-
 <h2>
 📢 Anuncios
 <span id="editIcon" style="cursor:pointer;">✏️</span>
 </h2>
-
 <ul id="lista"></ul>
-
 <div class="adminPanel" id="adminPanel">
 <input id="nuevoAnuncio" placeholder="Nuevo anuncio">
 <button id="addBtn">Agregar</button>
 </div>
-
 </div>
 
 <div class="social-icons">
-
 <a href="https://discord.gg/rRGZBfeRk4" target="_blank">
 <img src="https://play-lh.googleusercontent.com/s7SUyvveKqEgpwVz74VDeQWGGhob_Vyj9_ubJGwUPvAXpPe4xAJeZ0l3pF2F7njB_NYM">
 </a>
-
 <a href="https://www.youtube.com/@sep-293" target="_blank">
 <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">
 </a>
-
 </div>
 
 <div class="footer">
@@ -238,100 +207,48 @@ margin-top:10px;
 </div>
 
 <script type="module">
+import { PASSWORD } from './config.js'; // aquí importamos la contraseña segura
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
-
-const firebaseConfig={
-apiKey:"AIzaSyAVK1jVFsEvjzjQYLPp4nkGdRdMNJ9psPc",
-authDomain:"sepmc-2ab3d.firebaseapp.com",
-databaseURL:"https://sepmc-2ab3d-default-rtdb.firebaseio.com",
-projectId:"sepmc-2ab3d",
-storageBucket:"sepmc-2ab3d.appspot.com",
-messagingSenderId:"1015746236260",
-appId:"1:1015746236260:web:baf7779cc6fcbb5757b471"
-};
-
-const app=initializeApp(firebaseConfig);
-const db=getDatabase(app);
-
-const anunciosRef=ref(db,"anuncios/lista");
-const passwordRef=ref(db,"config/password");
-
-let serverPassword="";
-let anuncios=[];
-
+const anuncios=[];
 const lista=document.getElementById("lista");
 const panel=document.getElementById("adminPanel");
-
-onValue(passwordRef,(s)=>{
-serverPassword=s.val();
-});
-
-onValue(anunciosRef,(snapshot)=>{
-anuncios=snapshot.val()||[];
-render();
-});
+const loginModal=document.getElementById("loginModal");
 
 function render(){
-
-lista.innerHTML="";
-
-anuncios.forEach((a,i)=>{
-
-const li=document.createElement("li");
-
-li.innerHTML=`${a}
-<button class="deleteBtn" onclick="deleteAnuncio(${i})">X</button>`;
-
-lista.appendChild(li);
-
-});
-
+  lista.innerHTML="";
+  anuncios.forEach((a,i)=>{
+    const li=document.createElement("li");
+    li.innerHTML=`${a} <button class="deleteBtn" onclick="deleteAnuncio(${i})">X</button>`;
+    lista.appendChild(li);
+  });
 }
 
 window.deleteAnuncio=function(i){
-
-anuncios.splice(i,1);
-set(anunciosRef,anuncios);
-
+  anuncios.splice(i,1);
+  render();
 }
 
 document.getElementById("editIcon").onclick=()=>{
-document.getElementById("loginModal").style.display="flex";
+  loginModal.style.display="flex";
 }
 
 document.getElementById("loginBtn").onclick=()=>{
-
-const pass=document.getElementById("passInput").value;
-
-if(pass===serverPassword){
-
-panel.style.display="block";
-document.getElementById("loginModal").style.display="none";
-
-}else{
-
-alert("Contraseña incorrecta");
-
-}
-
+  const pass=document.getElementById("passInput").value;
+  if(pass===PASSWORD){
+    panel.style.display="block";
+    loginModal.style.display="none";
+  }else{
+    alert("❌ Contraseña incorrecta");
+  }
 }
 
 document.getElementById("addBtn").onclick=()=>{
-
-const txt=document.getElementById("nuevoAnuncio").value;
-
-if(!txt)return;
-
-anuncios.push(txt);
-
-set(anunciosRef,anuncios);
-
-document.getElementById("nuevoAnuncio").value="";
-
+  const txt=document.getElementById("nuevoAnuncio").value;
+  if(!txt) return;
+  anuncios.push(txt);
+  document.getElementById("nuevoAnuncio").value="";
+  render();
 }
-
 </script>
 
 </body>
