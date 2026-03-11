@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SEP Minecraft</title>
-
 <style>
 body{
 margin:0;
@@ -66,16 +65,20 @@ padding:1rem;
 margin:2rem auto;
 max-width:90%;
 text-align:left;
+max-height:500px;
+overflow-y:auto;
 }
 .anuncios h2{
 color:#ff0;
 text-shadow:0 0 10px #ff0;
 display:flex;
 justify-content:space-between;
+align-items:center;
 }
 .anuncios ul{
 list-style:none;
 padding:0;
+margin:0;
 }
 .anuncios li{
 background:#222;
@@ -86,15 +89,34 @@ border-radius:10px;
 display:flex;
 justify-content:space-between;
 align-items:center;
+transition: 0.5s;
+opacity:0;
+animation:fadeIn 0.5s forwards;
 }
-.deleteBtn{
-background:red;
+@keyframes fadeIn{
+to{opacity:1;}
+}
+.category-badge{
+padding:2px 6px;
+border-radius:5px;
+font-size:0.8rem;
+margin-right:5px;
+color:#000;
+font-weight:bold;
+}
+.category-importante{background:red;}
+.category-general{background:yellow;}
+.category-evento{background:limegreen;}
+.editBtn, .deleteBtn, .restoreBtn{
+background:#0ff;
 border:none;
-color:white;
-padding:4px 8px;
-border-radius:6px;
+color:#000;
+padding:3px 6px;
+border-radius:5px;
+margin-left:3px;
 cursor:pointer;
 }
+.editBtn:hover, .deleteBtn:hover, .restoreBtn:hover{filter:brightness(1.3);}
 .social-icons{
 display:flex;
 justify-content:center;
@@ -135,7 +157,7 @@ box-shadow:0 0 15px #0ff;
 max-width:300px;
 width:90%;
 }
-.modal input{
+.modal input, .modal select{
 padding:10px;
 margin:10px 0;
 width:100%;
@@ -152,11 +174,9 @@ cursor:pointer;
 background:#0ff;
 color:#000;
 font-weight:bold;
+margin-right:5px;
 }
-.adminPanel{
-display:none;
-margin-top:10px;
-}
+.adminPanel{display:none;margin-top:10px;}
 </style>
 </head>
 <body>
@@ -179,10 +199,6 @@ margin-top:10px;
 <span id="editIcon" style="cursor:pointer;">✏️</span>
 </h2>
 <ul id="lista"></ul>
-<div class="adminPanel" id="adminPanel">
-<input id="nuevoAnuncio" placeholder="Nuevo anuncio">
-<button id="addBtn">Agregar</button>
-</div>
 </div>
 
 <div class="social-icons">
@@ -194,10 +210,9 @@ margin-top:10px;
 </a>
 </div>
 
-<div class="footer">
-© 2025 SEP Minecraft | Página creada por Derick
-</div>
+<div class="footer">© 2025 SEP Minecraft | Página creada por Derick</div>
 
+<!-- MODAL ADMIN -->
 <div id="loginModal" class="modal">
 <div class="modal-content">
 <h3>🔒 Admin Login</h3>
@@ -206,49 +221,110 @@ margin-top:10px;
 </div>
 </div>
 
-<script type="module">
-import { PASSWORD } from './config.js'; // aquí importamos la contraseña segura
+<div id="adminPanel" class="modal-content adminPanel">
+<h3>📝 Panel de Anuncios</h3>
+<input type="text" id="nuevoAnuncio" placeholder="Nuevo anuncio">
+<select id="categoria">
+<option value="general">📢 General</option>
+<option value="importante">⚠️ Importante</option>
+<option value="evento">🎉 Evento</option>
+</select>
+<button id="addBtn">Agregar</button>
+<h4>Papelera temporal</h4>
+<ul id="trashList"></ul>
+<button id="clearTrash">Vaciar Papelera</button>
+<button id="closeAdmin">Cerrar</button>
+</div>
 
-const anuncios=[];
-const lista=document.getElementById("lista");
-const panel=document.getElementById("adminPanel");
-const loginModal=document.getElementById("loginModal");
+<script type="module">
+// contraseña fija
+const PASSWORD = "1771";
+
+let anuncios = JSON.parse(localStorage.getItem("anuncios")||"[]");
+let trash = JSON.parse(localStorage.getItem("trash")||"[]");
+
+const lista = document.getElementById("lista");
+const trashList = document.getElementById("trashList");
+const loginModal = document.getElementById("loginModal");
+const adminPanel = document.getElementById("adminPanel");
+
+function save(){
+  localStorage.setItem("anuncios",JSON.stringify(anuncios));
+  localStorage.setItem("trash",JSON.stringify(trash));
+}
 
 function render(){
   lista.innerHTML="";
-  anuncios.forEach((a,i)=>{
-    const li=document.createElement("li");
-    li.innerHTML=`${a} <button class="deleteBtn" onclick="deleteAnuncio(${i})">X</button>`;
+  anuncios.slice(-10).forEach((a,i)=>{
+    const li = document.createElement("li");
+    li.innerHTML=`
+      <span class="category-badge ${a.category==='importante'?'category-importante':a.category==='evento'?'category-evento':'category-general'}">${a.category==='importante'?'⚠️':a.category==='evento'?'🎉':'📢'}</span>
+      <span class="text" contenteditable="true">${a.text}</span>
+      <span>${a.date}</span>
+      <div>
+        <button class="deleteBtn" onclick="deleteAnuncio(${i})">X</button>
+      </div>
+    `;
+    li.querySelector(".text").addEventListener("blur", ()=>{
+      a.text = li.querySelector(".text").textContent.trim();
+      save();
+    });
     lista.appendChild(li);
+  });
+  // render trash
+  trashList.innerHTML="";
+  trash.forEach((t,i)=>{
+    const li = document.createElement("li");
+    li.innerHTML = `${t.text} <button class="restoreBtn" onclick="restoreAnuncio(${i})">Restaurar</button>`;
+    trashList.appendChild(li);
   });
 }
 
 window.deleteAnuncio=function(i){
+  trash.push(anuncios[i]);
   anuncios.splice(i,1);
+  save();
+  render();
+}
+window.restoreAnuncio=function(i){
+  anuncios.push(trash[i]);
+  trash.splice(i,1);
+  save();
   render();
 }
 
-document.getElementById("editIcon").onclick=()=>{
-  loginModal.style.display="flex";
-}
-
+document.getElementById("editIcon").onclick=()=>{loginModal.style.display="flex";}
 document.getElementById("loginBtn").onclick=()=>{
-  const pass=document.getElementById("passInput").value;
-  if(pass===PASSWORD){
-    panel.style.display="block";
+  const val = document.getElementById("passInput").value;
+  if(val===PASSWORD){
+    adminPanel.style.display="block";
     loginModal.style.display="none";
-  }else{
-    alert("❌ Contraseña incorrecta");
-  }
+  }else alert("❌ Contraseña incorrecta");
 }
 
 document.getElementById("addBtn").onclick=()=>{
-  const txt=document.getElementById("nuevoAnuncio").value;
-  if(!txt) return;
-  anuncios.push(txt);
+  const text = document.getElementById("nuevoAnuncio").value.trim();
+  const category = document.getElementById("categoria").value;
+  if(!text) return;
+  const date = new Date().toLocaleString();
+  anuncios.push({text, category, date});
   document.getElementById("nuevoAnuncio").value="";
+  save();
   render();
 }
+
+document.getElementById("clearTrash").onclick=()=>{
+  trash=[];
+  save();
+  render();
+}
+
+document.getElementById("closeAdmin").onclick=()=>{
+  adminPanel.style.display="none";
+}
+
+// render inicial
+render();
 </script>
 
 </body>
