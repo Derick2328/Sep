@@ -2,292 +2,337 @@
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SEP Minecraft</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEP Minecraft</title>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #0a0a0a, #003333, #0a0a0a, #001a1a);
-      background-size: 400% 400%;
-      animation: neonBackground 20s ease infinite;
-      color: #fff;
-      text-align: center;
-    }
+<style>
 
-    @keyframes neonBackground {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
+body{
+margin:0;
+font-family:'Segoe UI',sans-serif;
+background:linear-gradient(135deg,#0a0a0a,#003333,#0a0a0a,#001a1a);
+background-size:400% 400%;
+animation:neonBackground 20s ease infinite;
+color:#fff;
+text-align:center;
+}
 
-    h1 {
-      color: #00ffcc;
-      font-size: 3rem;
-      margin-top: 2rem;
-      text-shadow: 0 0 15px #00ffcc;
-    }
+@keyframes neonBackground{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
 
-    .ip-box {
-      background: #111;
-      border: 2px solid #00ffcc;
-      border-radius: 15px;
-      padding: 1rem;
-      display: inline-block;
-      margin: 1rem auto;
-      box-shadow: 0 0 20px #00ffcc50;
-    }
+h1{
+color:#00ffcc;
+font-size:3rem;
+margin-top:2rem;
+text-shadow:0 0 15px #00ffcc;
+}
 
-    .ip-box p { margin: 0.5rem 0; }
-    .ip { font-weight: bold; font-size: 1.2rem; color: #0ff; }
+.ip-box{
+background:#111;
+border:2px solid #00ffcc;
+border-radius:15px;
+padding:1rem;
+display:inline-block;
+margin:1rem auto;
+box-shadow:0 0 20px #00ffcc50;
+}
 
-    .btn {
-      display: block;
-      background: #111;
-      border: 2px solid #0ff;
-      color: #0ff;
-      padding: 0.8rem 1.5rem;
-      margin: 0.5rem auto;
-      border-radius: 10px;
-      text-decoration: none;
-      transition: 0.2s ease;
-      max-width: 300px;
-    }
+.ip{
+font-weight:bold;
+font-size:1.2rem;
+color:#0ff;
+}
 
-    .btn:hover {
-      background: #0ff;
-      color: #000;
-      box-shadow: 0 0 20px #0ff;
-    }
+.btn{
+display:block;
+background:#111;
+border:2px solid #0ff;
+color:#0ff;
+padding:0.8rem 1.5rem;
+margin:0.5rem auto;
+border-radius:10px;
+text-decoration:none;
+transition:0.2s;
+max-width:300px;
+}
 
-    .anuncios {
-      background: #111;
-      border: 2px solid #ff0;
-      box-shadow: 0 0 20px #ff0a;
-      border-radius: 15px;
-      padding: 1rem;
-      margin: 2rem auto;
-      max-width: 90%;
-      text-align: left;
-    }
+.btn:hover{
+background:#0ff;
+color:#000;
+box-shadow:0 0 20px #0ff;
+}
 
-    .anuncios h2 {
-      color: #ff0;
-      text-shadow: 0 0 10px #ff0;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+.anuncios{
+background:#111;
+border:2px solid #ff0;
+box-shadow:0 0 20px #ff0a;
+border-radius:15px;
+padding:1rem;
+margin:2rem auto;
+max-width:90%;
+text-align:left;
+}
 
-    .anuncios ul {
-      list-style: none;
-      padding: 0;
-      color: #fff;
-      margin: 0;
-    }
+.anuncios h2{
+color:#ff0;
+text-shadow:0 0 10px #ff0;
+display:flex;
+justify-content:space-between;
+}
 
-    .anuncios li {
-      background: #222;
-      border: 1px solid #555;
-      padding: 0.7rem;
-      margin: 0.5rem 0;
-      border-radius: 10px;
-    }
+.anuncios ul{
+list-style:none;
+padding:0;
+}
 
-    .edit-icon {
-      cursor: pointer;
-      font-size: 1.2rem;
-      color: #ff0;
-      text-shadow: 0 0 5px #ff0;
-      transition: 0.3s;
-      user-select: none;
-    }
+.anuncios li{
+background:#222;
+border:1px solid #555;
+padding:0.7rem;
+margin:0.5rem 0;
+border-radius:10px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
 
-    .edit-icon:hover { color: #fff; }
+.deleteBtn{
+background:red;
+border:none;
+color:white;
+padding:4px 8px;
+border-radius:6px;
+cursor:pointer;
+}
 
-    .social-icons {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      flex-wrap: wrap;
-      margin-top: 2rem;
-    }
+.social-icons{
+display:flex;
+justify-content:center;
+gap:20px;
+flex-wrap:wrap;
+margin-top:2rem;
+}
 
-    .social-icons a img {
-      height: 48px;
-      border-radius: 10px;
-      transition: 0.3s;
-    }
+.social-icons img{
+height:48px;
+border-radius:10px;
+transition:.3s;
+}
 
-    .social-icons a img:hover {
-      filter: brightness(1.2);
-    }
+.social-icons img:hover{
+filter:brightness(1.3);
+}
 
-    .footer {
-      margin-top: 3rem;
-      font-size: 0.9rem;
-      color: #888;
-    }
+.footer{
+margin-top:3rem;
+font-size:.9rem;
+color:#888;
+}
 
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    }
+.modal{
+display:none;
+position:fixed;
+top:0;
+left:0;
+right:0;
+bottom:0;
+background:rgba(0,0,0,.8);
+align-items:center;
+justify-content:center;
+}
 
-    .modal-content {
-      background: #111;
-      padding: 20px;
-      border-radius: 15px;
-      border: 2px solid #0ff;
-      box-shadow: 0 0 15px #0ff;
-      text-align: center;
-      max-width: 300px;
-      width: 90%;
-    }
+.modal-content{
+background:#111;
+padding:20px;
+border-radius:15px;
+border:2px solid #0ff;
+box-shadow:0 0 15px #0ff;
+max-width:300px;
+width:90%;
+}
 
-    .modal input {
-      padding: 10px;
-      margin: 10px 0;
-      width: 100%;
-      border-radius: 8px;
-      border: 1px solid #0ff;
-      background: #222;
-      color: #fff;
-    }
+.modal input{
+padding:10px;
+margin:10px 0;
+width:100%;
+border-radius:8px;
+border:1px solid #0ff;
+background:#222;
+color:#fff;
+}
 
-    .modal button {
-      padding: 8px 15px;
-      margin-top: 5px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      background: #0ff;
-      color: #000;
-      font-weight: bold;
-      transition: 0.2s;
-    }
+.modal button{
+padding:8px 15px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+background:#0ff;
+color:#000;
+font-weight:bold;
+}
 
-    .modal button:hover { background: #00cccc; }
-  </style>
+.adminPanel{
+display:none;
+margin-top:10px;
+}
+
+</style>
 </head>
 
 <body>
 
-  <h1>🌟 SEP Minecraft 🌟</h1>
+<h1>🌟 SEP Minecraft 🌟</h1>
 
-  <div class="ip-box">
-    <p>🎮 IP del servidor:</p>
-    <p class="ip">survival_sep.dynet.com</p>
-    <p>📱 Puerto: <span class="ip">24600</span></p>
-  </div>
+<div class="ip-box">
+<p>🎮 IP del servidor:</p>
+<p class="ip">survival_sep.dynet.com</p>
+<p>📱 Puerto: <span class="ip">24600</span></p>
+</div>
 
-  <a class="btn" href="reglas">📜 Ver reglas</a>
-  <a class="btn" href="staff">👑 Ver staff</a>
-  <a class="btn" href="eventos">📅 Eventos</a>
+<a class="btn" href="reglas">📜 Ver reglas</a>
+<a class="btn" href="staff">👑 Ver staff</a>
+<a class="btn" href="eventos">📅 Eventos</a>
 
-  <div class="anuncios">
-    <h2>
-      📢 Anuncios del servidor
-      <span id="editIcon" class="edit-icon" title="Editar anuncios">✏️</span>
-    </h2>
-    <ul id="anuncios-lista"></ul>
-  </div>
+<div class="anuncios">
 
-  <!-- SOLO Discord -->
-  <div class="social-icons">
-    <a href="https://discord.gg/YmwsAAC6Pu" target="_blank">
-      <img src="https://play-lh.googleusercontent.com/s7SUyvveKqEgpwVz74VDeQWGGhob_Vyj9_ubJGwUPvAXpPe4xAJeZ0l3pF2F7njB_NYM" alt="Discord">
-    </a>
-  </div>
+<h2>
+📢 Anuncios
+<span id="editIcon" style="cursor:pointer;">✏️</span>
+</h2>
 
-  <div class="footer">© 2025 SEP Minecraft | Página creada por Derick</div>
+<ul id="lista"></ul>
 
-  <div id="passwordModal" class="modal" style="display:none;">
-    <div class="modal-content">
-      <h3>🔒 Ingresa la contraseña</h3>
-      <input type="password" id="passwordInput" placeholder="Contraseña">
-      <button id="passwordSubmit">Aceptar</button>
-      <button id="passwordCancel">Cancelar</button>
-    </div>
-  </div>
+<div class="adminPanel" id="adminPanel">
+<input id="nuevoAnuncio" placeholder="Nuevo anuncio">
+<button id="addBtn">Agregar</button>
+</div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+</div>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAVK1jVFsEvjzjQYLPp4nkGdRdMNJ9psPc",
-      authDomain: "sepmc-2ab3d.firebaseapp.com",
-      databaseURL: "https://sepmc-2ab3d-default-rtdb.firebaseio.com",
-      projectId: "sepmc-2ab3d",
-      storageBucket: "sepmc-2ab3d.appspot.com",
-      messagingSenderId: "1015746236260",
-      appId: "1:1015746236260:web:baf7779cc6fcbb5757b471"
-    };
+<div class="social-icons">
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const anunciosRef = ref(db, 'anuncios/texto');
+<a href="https://discord.gg/rRGZBfeRk4" target="_blank">
+<img src="https://play-lh.googleusercontent.com/s7SUyvveKqEgpwVz74VDeQWGGhob_Vyj9_ubJGwUPvAXpPe4xAJeZ0l3pF2F7njB_NYM">
+</a>
 
-    const lista = document.getElementById("anuncios-lista");
-    const editIcon = document.getElementById("editIcon");
+<a href="https://www.youtube.com/@sep-293" target="_blank">
+<img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">
+</a>
 
-    const passwordModal = document.getElementById("passwordModal");
-    const passwordInput = document.getElementById("passwordInput");
-    const passwordSubmit = document.getElementById("passwordSubmit");
-    const passwordCancel = document.getElementById("passwordCancel");
+</div>
 
-    onValue(anunciosRef, (snapshot) => {
-      const data = snapshot.val();
-      lista.innerHTML = "";
-      if (Array.isArray(data)) {
-        data.forEach(anuncio => {
-          const li = document.createElement("li");
-          li.textContent = anuncio;
-          lista.appendChild(li);
-        });
-      }
-    });
+<div class="footer">
+© 2025 SEP Minecraft | Página creada por Derick
+</div>
 
-    editIcon.addEventListener("click", () => {
-      passwordModal.style.display = "flex";
-      passwordInput.value = "";
-      passwordInput.focus();
-    });
+<div id="loginModal" class="modal">
+<div class="modal-content">
+<h3>🔒 Admin Login</h3>
+<input type="password" id="passInput" placeholder="Contraseña">
+<button id="loginBtn">Entrar</button>
+</div>
+</div>
 
-    passwordCancel.addEventListener("click", () => {
-      passwordModal.style.display = "none";
-    });
+<script type="module">
 
-    passwordSubmit.addEventListener("click", () => {
-      const password = passwordInput.value;
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
-      if (password !== "1771") {
-        alert("❌ Contraseña incorrecta.");
-        return;
-      }
+const firebaseConfig={
+apiKey:"AIzaSyAVK1jVFsEvjzjQYLPp4nkGdRdMNJ9psPc",
+authDomain:"sepmc-2ab3d.firebaseapp.com",
+databaseURL:"https://sepmc-2ab3d-default-rtdb.firebaseio.com",
+projectId:"sepmc-2ab3d",
+storageBucket:"sepmc-2ab3d.appspot.com",
+messagingSenderId:"1015746236260",
+appId:"1:1015746236260:web:baf7779cc6fcbb5757b471"
+};
 
-      passwordModal.style.display = "none";
-      const actuales = Array.from(lista.children).map(li => li.textContent).join("\n");
-      const nuevos = prompt("📝 Edita los anuncios (uno por línea):", actuales);
+const app=initializeApp(firebaseConfig);
+const db=getDatabase(app);
 
-      if (nuevos !== null) {
-        const nuevosArray = nuevos.split("\n").map(line => line.trim()).filter(line => line.length > 0);
-        set(anunciosRef, nuevosArray)
-          .then(() => { alert("✅ Anuncios actualizados."); })
-          .catch(error => { alert("❌ Error al guardar anuncios:\n" + error.message); });
-      }
-    });
-  </script>
+const anunciosRef=ref(db,"anuncios/lista");
+const passwordRef=ref(db,"config/password");
+
+let serverPassword="";
+let anuncios=[];
+
+const lista=document.getElementById("lista");
+const panel=document.getElementById("adminPanel");
+
+onValue(passwordRef,(s)=>{
+serverPassword=s.val();
+});
+
+onValue(anunciosRef,(snapshot)=>{
+anuncios=snapshot.val()||[];
+render();
+});
+
+function render(){
+
+lista.innerHTML="";
+
+anuncios.forEach((a,i)=>{
+
+const li=document.createElement("li");
+
+li.innerHTML=`${a}
+<button class="deleteBtn" onclick="deleteAnuncio(${i})">X</button>`;
+
+lista.appendChild(li);
+
+});
+
+}
+
+window.deleteAnuncio=function(i){
+
+anuncios.splice(i,1);
+set(anunciosRef,anuncios);
+
+}
+
+document.getElementById("editIcon").onclick=()=>{
+document.getElementById("loginModal").style.display="flex";
+}
+
+document.getElementById("loginBtn").onclick=()=>{
+
+const pass=document.getElementById("passInput").value;
+
+if(pass===serverPassword){
+
+panel.style.display="block";
+document.getElementById("loginModal").style.display="none";
+
+}else{
+
+alert("Contraseña incorrecta");
+
+}
+
+}
+
+document.getElementById("addBtn").onclick=()=>{
+
+const txt=document.getElementById("nuevoAnuncio").value;
+
+if(!txt)return;
+
+anuncios.push(txt);
+
+set(anunciosRef,anuncios);
+
+document.getElementById("nuevoAnuncio").value="";
+
+}
+
+</script>
 
 </body>
 </html>
