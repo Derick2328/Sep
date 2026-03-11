@@ -4,107 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Eventos | SEP Minecraft</title>
-
 <style>
-  body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #0a0a0a, #003333, #0a0a0a, #001a1a);
-    background-size: 400% 400%;
-    animation: neonBackground 20s ease infinite;
-    color: #fff;
-    text-align: center;
-    padding: 20px;
-  }
-  @keyframes neonBackground {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-  h1 {
-    color: #00ffcc;
-    font-size: 3rem;
-    margin-top: 2rem;
-    text-shadow: 0 0 15px #00ffcc;
-  }
-  .eventos-box {
-    background: #111;
-    border: 2px solid #00ffcc;
-    border-radius: 15px;
-    padding: 1.5rem;
-    margin: 2rem auto;
-    max-width: 800px;
-    box-shadow: 0 0 20px #00ffcc50;
-    text-align: left;
-  }
-  .eventos-box li {
-    position: relative;
-    background: #222;
-    border: 1px solid #555;
-    padding: 0.8rem;
-    margin: 0.5rem 0;
-    border-radius: 10px;
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeIn 0.5s forwards;
-  }
-  .delete-btn {
-    position: absolute;
-    top: 5px;
-    right: 10px;
-    cursor: pointer;
-    font-size: 1.2rem;
-  }
-  @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
-  .btn {
-    display: inline-block;
-    background: #111;
-    border: 2px solid #0ff;
-    color: #0ff;
-    padding: 0.8rem 1.5rem;
-    margin: 1rem auto;
-    border-radius: 10px;
-    text-decoration: none;
-    transition: 0.2s ease;
-    font-size: 1.1rem;
-    cursor: pointer;
-  }
-  .btn:hover { background: #0ff; color: #000; box-shadow: 0 0 20px #0ff; }
-
-  .modal {
-    display: none;
-    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.85);
-    align-items: center; 
-    justify-content: center;
-    z-index: 1000;
-    animation: fadeIn 0.3s forwards;
-  }
-  .modal-content {
-    background: #111;
-    padding: 20px;
-    border-radius: 15px;
-    border: 2px solid #0ff;
-    box-shadow: 0 0 15px #0ff;
-    text-align: center;
-    max-width: 400px;
-    width: 90%;
-  }
-  .modal-content input,
-  .modal-content textarea {
-    padding: 10px;
-    margin: 5px 0;
-    width: 100%;
-    border-radius: 8px;
-    border: 1px solid #0ff;
-    background: #222;
-    color: #fff;
-  }
-  .modal-content img {
-    max-width: 100px;
-    margin-top: 5px;
-    border-radius: 8px;
-  }
+  body {margin:0;font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(135deg,#0a0a0a,#003333,#0a0a0a,#001a1a);
+    background-size:400% 400%;animation:neonBackground 20s ease infinite;color:#fff;text-align:center;padding:20px;}
+  @keyframes neonBackground{0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+  h1{color:#00ffcc;font-size:3rem;margin-top:2rem;text-shadow:0 0 15px #00ffcc;}
+  .eventos-box{background:#111;border:2px solid #00ffcc;border-radius:15px;padding:1.5rem;margin:2rem auto;max-width:800px;box-shadow:0 0 20px #00ffcc50;text-align:left;}
+  .eventos-box li{position:relative;background:#222;border:1px solid #555;padding:0.8rem;margin:0.5rem 0;border-radius:10px;opacity:0;transform:translateY(20px);animation:fadeIn 0.5s forwards;}
+  .delete-btn{position:absolute;top:5px;right:10px;cursor:pointer;font-size:1.2rem;}
+  @keyframes fadeIn{to{opacity:1;transform:translateY(0);}}
+  .btn{display:inline-block;background:#111;border:2px solid #0ff;color:#0ff;padding:0.8rem 1.5rem;margin:1rem auto;border-radius:10px;text-decoration:none;transition:0.2s ease;font-size:1.1rem;cursor:pointer;}
+  .btn:hover{background:#0ff;color:#000;box-shadow:0 0 20px #0ff;}
+  .modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;z-index:1000;animation:fadeIn 0.3s forwards;}
+  .modal-content{background:#111;padding:20px;border-radius:15px;border:2px solid #0ff;box-shadow:0 0 15px #0ff;text-align:center;max-width:400px;width:90%;}
+  .modal-content input,.modal-content textarea{padding:10px;margin:5px 0;width:100%;border-radius:8px;border:1px solid #0ff;background:#222;color:#fff;}
+  .modal-content img{max-width:100px;margin-top:5px;border-radius:8px;}
 </style>
 </head>
 <body>
@@ -112,13 +27,13 @@
 <h1>📅 Eventos del Servidor</h1>
 
 <div class="eventos-box">
-  <ul id="eventos-lista">
-    <li>📌 No hay eventos. ¡Crea uno!</li>
-  </ul>
+  <ul id="eventos-lista"><li>📌 No hay eventos. ¡Crea uno!</li></ul>
 </div>
 
 <button id="crearEventoBtn" class="btn">➕ Crear evento</button>
-<a href="index.html" class="btn">⬅ Volver al inicio</a>
+<button id="guardarJSON" class="btn">💾 Descargar JSON</button>
+<input type="file" id="cargarJSON" style="display:none">
+<button id="subirJSON" class="btn">⬆️ Subir JSON</button>
 
 <!-- MODAL -->
 <div id="eventModal" class="modal">
@@ -128,8 +43,7 @@
     <button id="passwordSubmit" class="btn">Aceptar</button>
     <button id="passwordCancel" class="btn">Cancelar</button>
 
-    <!-- FORMULARIO EVENTO -->
-    <div id="formEvento" style="display:none; margin-top:10px;">
+    <div id="formEvento" style="display:none;margin-top:10px;">
       <input type="text" id="nombreEvento" placeholder="Nombre del evento">
       <input type="date" id="diaEvento">
       <input type="time" id="horaEvento">
@@ -150,127 +64,90 @@ const passCancel = document.getElementById("passwordCancel");
 const formEvento = document.getElementById("formEvento");
 const crearBtn = document.getElementById("crearEventoBtn");
 const guardarBtn = document.getElementById("guardarEvento");
+const guardarJSON = document.getElementById("guardarJSON");
+const subirJSON = document.getElementById("subirJSON");
+const cargarJSON = document.getElementById("cargarJSON");
 
-let eventos = JSON.parse(localStorage.getItem("eventos")) || [];
+let eventos = [];
 
-// Función para mostrar eventos
-function mostrarEventos() {
-  lista.innerHTML = "";
-  if(eventos.length===0){
-    lista.innerHTML = '<li>📌 No hay eventos. ¡Crea uno!</li>';
-    return;
-  }
+// Mostrar eventos
+function mostrarEventos(){
+  lista.innerHTML="";
+  if(eventos.length===0){lista.innerHTML='<li>📌 No hay eventos. ¡Crea uno!</li>'; return;}
   eventos.forEach((e,i)=>{
-    const li = document.createElement("li");
-    li.innerHTML = `
-      <strong>${e.nombre}</strong><br>
-      📅 ${e.dia} ⏰ ${e.hora}<br>
-      📍 ${e.lugar}<br>
-      ${e.imagen ? `<img src="${e.imagen}" alt="imagen"><br>` : ""}
-      ${e.descripcion ? `<em>${e.descripcion}</em>` : ""}
-      <span class="delete-btn" title="Borrar evento">🗑️</span>
-    `;
+    const li=document.createElement("li");
+    li.style.animationDelay=`${i*0.1}s`;
+    li.innerHTML=`<strong>${e.nombre}</strong><br>📅 ${e.dia} ⏰ ${e.hora}<br>📍 ${e.lugar}<br>${e.imagen?`<img src="${e.imagen}" alt="imagen"><br>`:""}${e.descripcion?`<em>${e.descripcion}</em>`:""}<span class="delete-btn" title="Borrar evento">🗑️</span>`;
     lista.appendChild(li);
-
-    li.querySelector(".delete-btn").addEventListener("click", async ()=>{
-      const ok = await pedirPassword();
-      if(!ok) return;
+    li.querySelector(".delete-btn").addEventListener("click",async()=>{
+      const ok = await pedirPassword(); if(!ok) return;
       eventos.splice(i,1);
-      localStorage.setItem("eventos", JSON.stringify(eventos));
       mostrarEventos();
     });
   });
 }
 
-// Función para pedir contraseña
+// Reset formulario
+function resetForm(){['nombreEvento','diaEvento','horaEvento','lugarEvento','descEvento','imgEvento'].forEach(id=>document.getElementById(id).value="");}
 
+// Pedir contraseña
 function pedirPassword(){
   return new Promise(resolve=>{
-    modal.style.display = "flex";
-    formEvento.style.display = "none"; 
-    passInput.value = "";
-    passInput.focus();
-
-    function aceptar(){
-      if(passInput.value !== "1771"){
-        alert("❌ Contraseña incorrecta.");
-        return;
-      }
-      cleanup();
-      resolve(true);
-    }
-
-    function cancelar(){
-      cleanup();
-      resolve(false);
-    }
-
-    function cleanup(){
-      passSubmit.removeEventListener("click", aceptar);
-      passCancel.removeEventListener("click", cancelar);
-
-      // 🔥 FALTABA ESTO: cerrar modal siempre
-      modal.style.display = "none";
-    }
-
-    passSubmit.addEventListener("click", aceptar);
-    passCancel.addEventListener("click", cancelar);
+    modal.style.display="flex"; formEvento.style.display="none"; passInput.value=""; passInput.focus();
+    function aceptar(){if(passInput.value!=="1771"){alert("❌ Contraseña incorrecta.");return;} cleanup(); resolve(true);}
+    function cancelar(){cleanup(); resolve(false);}
+    function cleanup(){passSubmit.removeEventListener("click",aceptar); passCancel.removeEventListener("click",cancelar); modal.style.display="none";}
+    passSubmit.addEventListener("click",aceptar); passCancel.addEventListener("click",cancelar);
   });
 }
 
-  
 // Crear evento
-crearBtn.addEventListener("click", async ()=>{
-  const ok = await pedirPassword();
-  if(!ok) return;
-  // mostrar formulario dentro del modal
-  formEvento.style.display = "block";
+crearBtn.addEventListener("click",async()=>{
+  const ok=await pedirPassword(); if(!ok) return;
+  formEvento.style.display="block"; resetForm(); modal.style.display="flex";
 });
 
 // Guardar evento
-guardarBtn.addEventListener("click", ()=>{
-  const nombre = document.getElementById("nombreEvento").value;
-  const dia = document.getElementById("diaEvento").value;
-  const hora = document.getElementById("horaEvento").value;
-  const lugar = document.getElementById("lugarEvento").value;
-  const desc = document.getElementById("descEvento").value;
-  const fileInput = document.getElementById("imgEvento");
-
-  if(!nombre || !dia || !hora || !lugar){
-    alert("❌ Completa todos los campos obligatorios.");
-    return;
-  }
-
-  const reader = new FileReader();
-  reader.onload = function(e){
-    eventos.push({
-      nombre,
-      dia,
-      hora,
-      lugar,
-      descripcion: desc,
-      imagen: e.target.result
-    });
-    localStorage.setItem("eventos", JSON.stringify(eventos));
-    mostrarEventos();
-    formEvento.style.display = "none";
-    modal.style.display = "none";
+guardarBtn.addEventListener("click",()=>{
+  const nombre=document.getElementById("nombreEvento").value;
+  const dia=document.getElementById("diaEvento").value;
+  const hora=document.getElementById("horaEvento").value;
+  const lugar=document.getElementById("lugarEvento").value;
+  const desc=document.getElementById("descEvento").value;
+  const fileInput=document.getElementById("imgEvento");
+  if(!nombre||!dia||!hora||!lugar){alert("❌ Completa todos los campos obligatorios.");return;}
+  const reader=new FileReader();
+  reader.onload=function(e){
+    eventos.push({nombre,dia,hora,lugar,descripcion:desc,imagen:e.target.result});
+    mostrarEventos(); resetForm(); formEvento.style.display="none"; modal.style.display="none";
   };
-
-  if(fileInput.files[0]){
-    reader.readAsDataURL(fileInput.files[0]);
-  } else {
-    eventos.push({nombre,dia,hora,lugar,descripcion:desc,imagen:""});
-    localStorage.setItem("eventos", JSON.stringify(eventos));
-    mostrarEventos();
-    formEvento.style.display = "none";
-    modal.style.display = "none";
-  }
+  if(fileInput.files[0]){reader.readAsDataURL(fileInput.files[0]);} 
+  else {eventos.push({nombre,dia,hora,lugar,descripcion:desc,imagen:""}); mostrarEventos(); resetForm(); formEvento.style.display="none"; modal.style.display="none";}
 });
 
+// Descargar JSON
+guardarJSON.addEventListener("click",()=>{
+  const blob = new Blob([JSON.stringify(eventos,null,2)],{type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = "eventos.json"; a.click();
+  URL.revokeObjectURL(url);
+});
+
+// Subir JSON
+subirJSON.addEventListener("click",()=>cargarJSON.click());
+cargarJSON.addEventListener("change",(e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {try{eventos=JSON.parse(reader.result); mostrarEventos();}catch(err){alert("❌ JSON inválido");}};
+  reader.readAsText(file);
+});
+
+// Cerrar modal al click fuera
+modal.addEventListener("click",e=>{if(e.target===modal){modal.style.display="none";formEvento.style.display="none";resetForm();}});
+
 mostrarEventos();
-
 </script>
-
 </body>
 </html>
